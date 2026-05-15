@@ -1,23 +1,134 @@
-function enviarReserva() {
-    if (!mesaSeleccionada) { alert("Selecciona una mesa"); return; }
-    
-    const datos = {
-        nombre: document.getElementById('nombre').value,
-        fecha: document.getElementById('fecha').value,
-        mesa: mesaSeleccionada,
-        personas: document.getElementById('personas').value,
-        platos: Array.from(document.querySelectorAll('.check-plato:checked')).map(p => p.value)
-    };
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAÍZ | Fuego y Brasa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --oro: #c5a059; --negro: #0a0a0a; --gris: #1a1a1a; }
+        body { background-color: var(--negro); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; }
+        
+        header { 
+            height: 60vh; 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=2069'); 
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            border-bottom: 3px solid var(--oro);
+        }
+        h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: var(--oro); margin: 0; letter-spacing: 8px; }
 
-    fetch('https://restaurante-raiz.onrender.com/reservar', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(datos)
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert("¡Reserva enviada! Espera nuestra confirmación.");
-        location.reload(); // Limpia la página
-    })
-    .catch(err => alert("Error al enviar"));
-}
+        .container { max-width: 1000px; margin: auto; padding: 40px 20px; }
+        .seccion-titulo { font-family: 'Cinzel', serif; color: var(--oro); text-align: center; font-size: 2rem; margin: 40px 0; border-bottom: 1px solid var(--oro); }
+        
+        .grid-carta { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .plato-card { background: var(--gris); padding: 20px; border-radius: 5px; border: 1px solid #333; position: relative; }
+        .precio { position: absolute; top: 20px; right: 20px; color: var(--oro); font-weight: bold; }
+
+        /* MAPA */
+        .salon-container { background: #111; padding: 30px; border-radius: 15px; border: 1px solid var(--oro); text-align: center; margin-top: 50px; }
+        .grid-mesas { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; margin: 25px 0; }
+        .mesa { 
+            aspect-ratio: 1; border: 1px solid var(--oro); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 0.7rem; cursor: pointer; transition: 0.3s; color: var(--oro);
+        }
+        .mesa.seleccionada { background: var(--oro); color: black; font-weight: bold; transform: scale(1.1); }
+
+        .form-reserva { background: var(--gris); padding: 30px; margin-top: 40px; border-top: 4px solid var(--oro); }
+        input, select { background: #000; border: 1px solid #444; color: white; padding: 12px; width: 100%; margin-bottom: 15px; box-sizing: border-box; }
+        .btn-enviar { background: var(--oro); color: black; font-weight: bold; padding: 18px; width: 100%; border: none; cursor: pointer; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>RAÍZ</h1>
+        <p style="letter-spacing: 3px;">FUEGO · TIERRA · BRASA</p>
+    </header>
+
+    <div class="container">
+        <h2 class="seccion-titulo">Cortes de Autor</h2>
+        <div class="grid-carta">
+            <div class="plato-card">
+                <span class="precio">S/98</span>
+                <h3>Ojo de Bife</h3>
+                <p>Madurado 21 días a la brasa.</p>
+                <input type="checkbox" class="check-plato" value="Ojo de Bife"> Seleccionar
+            </div>
+            <div class="plato-card">
+                <span class="precio">S/120</span>
+                <h3>Tomahawk</h3>
+                <p>El corte premium de la casa.</p>
+                <input type="checkbox" class="check-plato" value="Tomahawk"> Seleccionar
+            </div>
+        </div>
+
+        <div class="salon-container">
+            <h2 style="font-family:'Cinzel'; color: var(--oro);">Reserva tu Mesa</h2>
+            <p>Salón Principal (360m²) - 64 Mesas Disponibles</p>
+            <div id="mapa-mesas" class="grid-mesas"></div>
+        </div>
+
+        <div class="form-reserva">
+            <input type="text" id="nombre" placeholder="Nombre completo">
+            <input type="datetime-local" id="fecha">
+            <select id="personas">
+                <option value="2">2 Personas</option>
+                <option value="4">4 Personas</option>
+                <option value="6">6 Personas</option>
+            </select>
+            <button class="btn-enviar" onclick="enviarReserva()">Solicitar Reserva</button>
+        </div>
+    </div>
+
+    <script>
+        let mesaSeleccionada = null;
+        const API_URL = "https://restaurante-raiz.onrender.com"; // Asegúrate que este sea tu link de Render (el primero)
+
+        // Crear las 64 mesas
+        const contenedor = document.getElementById('mapa-mesas');
+        for (let i = 1; i <= 64; i++) {
+            const div = document.createElement('div');
+            div.className = 'mesa';
+            div.innerText = i;
+            div.onclick = function() {
+                document.querySelectorAll('.mesa').forEach(m => m.classList.remove('seleccionada'));
+                this.classList.add('seleccionada');
+                mesaSeleccionada = i;
+            }
+            contenedor.appendChild(div);
+        }
+
+        async function enviarReserva() {
+            if (!mesaSeleccionada) { alert("Por favor, elige una mesa en el mapa"); return; }
+            
+            const datos = {
+                nombre: document.getElementById('nombre').value,
+                fecha: document.getElementById('fecha').value,
+                mesa: mesaSeleccionada,
+                personas: document.getElementById('personas').value,
+                platos: Array.from(document.querySelectorAll('.check-plato:checked')).map(p => p.value),
+                estado: 'Pendiente'
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/reservar`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(datos)
+                });
+                
+                if(response.ok) {
+                    alert("¡Solicitud enviada! Revisa el panel de administración.");
+                    location.reload();
+                } else {
+                    alert("Error al conectar con el servidor.");
+                }
+            } catch (error) {
+                alert("El servidor no responde. Verifica el link de la API.");
+            }
+        }
+    </script>
+</body>
+</html>
