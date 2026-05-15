@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAÍZ | Fuego, Tierra y Brasa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root { --oro: #d4af37; --fondo: #0a0a0a; --gris: #1a1a1a; --texto: #f4f4f4; }
+        body { background: var(--fondo); color: var(--texto); font-family: 'Montserrat', sans-serif; margin: 0; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; color: var(--oro); text-transform: uppercase; text-align: center; }
+        
+        .hero { 
+            height: 50vh; 
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070'); 
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        .container { max-width: 1100px; margin: auto; padding: 20px; }
+        
+        /* MAPA DE MESAS */
+        .mapa-container { background: var(--gris); padding: 20px; border-radius: 10px; border: 1px solid var(--oro); margin: 40px 0; }
+        .grid-mesas { 
+            display: grid; 
+            grid-template-columns: repeat(8, 1fr); 
+            gap: 10px; 
+            margin-top: 20px;
+        }
+        .mesa { 
+            aspect-ratio: 1; border: 1px solid #444; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; font-size: 0.7em; cursor: pointer; border-radius: 4px;
+        }
+        .libre { border-color: var(--oro); color: var(--oro); }
+        .ocupada { background: #333; color: #777; cursor: not-allowed; border: none; }
+        .seleccionada { background: var(--oro); color: black; font-weight: bold; }
+
+        /* CARTA */
+        .grid-carta { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .plato { background: var(--gris); padding: 15px; border-radius: 5px; border-left: 3px solid var(--oro); }
+        .precio { float: right; color: white; }
+
+        .form-reserva { background: var(--gris); padding: 30px; border-radius: 10px; margin-top: 40px; border: 1px solid var(--oro); }
+        .btn-enviar { background: var(--oro); color: black; width: 100%; padding: 20px; font-weight: bold; border: none; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <h1>RAÍZ</h1>
+        <p>RESTAURANTE DE AUTOR | 360m² de Experiencia</p>
+    </section>
+
+    <div class="container">
+        <div class="mapa-container">
+            <h2>Mapa del Salón (64 Mesas)</h2>
+            <p style="text-align:center; font-size: 0.8em;">Selecciona tu mesa: Dorado (Libre) | Gris (Ocupada)</p>
+            <div id="mapa" class="grid-mesas"></div>
+        </div>
+
+        <h2>Nuestra Carta</h2>
+        <div class="grid-carta">
+            <div class="plato">
+                <span class="precio">S/43</span>
+                <h3>Carpaccio de Lomo</h3>
+                <p>Finas láminas de lomo, oliva y alcaparras.</p>
+                <input type="checkbox" class="plato-sel" value="Carpaccio"> Pedir este plato
+            </div>
+            <div class="plato">
+                <span class="precio">S/90</span>
+                <h3>Lomo Fino (350g)</h3>
+                <p>Corte premium a la brasa con mantequilla artesanal.</p>
+                <input type="checkbox" class="plato-sel" value="Lomo Fino"> Pedir este plato
+            </div>
+            </div>
+
+        <div class="form-reserva">
+            <h3>Finalizar Reserva</h3>
+            <input type="hidden" id="mesa-final">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="text" id="nombre" placeholder="Tu Nombre" required>
+                <input type="tel" id="tel" placeholder="WhatsApp" required>
+                <input type="datetime-local" id="fecha" required>
+                <select id="ocasion">
+                    <option>Cena Normal</option>
+                    <option>Aniversario</option>
+                    <option>Cumpleaños</option>
+                </select>
+            </div>
+            <button class="btn-enviar" onclick="confirmarTodo()">CONFIRMAR MESA Y PEDIDO</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://TU-APP-DE-RENDER.onrender.com"; // LA CAMBIAREMOS LUEGO
+        let mesaSeleccionada = null;
+
+        // Generar 64 mesas según tu plano
+        async function cargarMapa() {
+            const contenedor = document.getElementById('mapa');
+            // Aquí llamaríamos a la API para ver cuáles están ocupadas
+            for (let i = 1; i <= 64; i++) {
+                const div = document.createElement('div');
+                div.className = 'mesa libre';
+                let cap = i <= 16 ? 2 : (i <= 48 ? 4 : 6);
+                div.innerHTML = `M${i}<br>${cap}p`;
+                div.onclick = () => {
+                    if (mesaSeleccionada) document.querySelectorAll('.mesa').forEach(m => m.classList.remove('seleccionada'));
+                    mesaSeleccionada = i;
+                    div.classList.add('seleccionada');
+                    document.getElementById('mesa-final').value = i;
+                };
+                contenedor.appendChild(div);
+            }
+        }
+
+        function confirmarTodo() {
+            const num = "51970869946";
+            const nombre = document.getElementById('nombre').value;
+            const mesa = mesaSeleccionada;
+            const fecha = document.getElementById('fecha').value;
+            
+            if(!mesa) return alert("Por favor, selecciona una mesa en el mapa");
+
+            let platos = [];
+            document.querySelectorAll('.plato-sel:checked').forEach(p => platos.push(p.value));
+
+            const msg = `*RESERVA RAÍZ*%0A*Nombre:* ${nombre}%0A*Mesa:* ${mesa}%0A*Fecha:* ${fecha}%0A*Pedido:* ${platos.join(', ')}`;
+            window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+        }
+
+        window.onload = cargarMapa;
+    </script>
+</body>
+</html>
