@@ -37,4 +37,114 @@
         .full-width { grid-column: span 2; }
         
         input, select, textarea { 
-            background: transparent; border: none; border-bottom: 1px solid #222;
+            background: transparent; border: none; border-bottom: 1px solid #222; 
+            color: white; padding: 15px 5px; width: 100%; outline: none; 
+            font-family: 'Montserrat', sans-serif; transition: 0.3s; box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus { border-bottom-color: var(--oro); }
+        ::placeholder { color: #444; font-size: 0.8rem; letter-spacing: 1px; }
+
+        .btn-reserva { 
+            grid-column: span 2; background: var(--oro); color: #000; 
+            padding: 20px; margin-top: 40px; border: none; cursor: pointer; 
+            font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 3px; transition: 0.3s;
+        }
+        .btn-reserva:hover { background: #fff; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>RAÍZ</h1>
+        <p class="tagline">Fuego · Tierra · Brasa</p>
+    </header>
+
+    <div class="container">
+        <div class="mapa-section">
+            <h2 class="seccion-titulo">Seleccione su ubicación</h2>
+            <p class="mapa-instruccion">Toque el círculo para elegir su lugar</p>
+            <div id="mapa-mesas" class="grid-mesas"></div>
+        </div>
+
+        <h2 class="seccion-titulo">Detalles de la reserva</h2>
+        <div class="reserva-form">
+            <input type="text" id="nombre" placeholder="NOMBRE COMPLETO" class="full-width">
+            <input type="tel" id="celular" placeholder="TELÉFONO CELULAR">
+            <input type="datetime-local" id="fecha">
+            
+            <select id="personas">
+                <option value="" disabled selected>NÚMERO DE PERSONAS</option>
+                <option value="1-2">1 - 2 Personas</option>
+                <option value="3-4">3 - 4 Personas</option>
+                <option value="5-6">5 - 6 Personas</option>
+                <option value="7+">Más de 6</option>
+            </select>
+
+            <select id="ocasion">
+                <option value="" disabled selected>OCASIÓN ESPECIAL</option>
+                <option value="Cena">Cena Estándar</option>
+                <option value="Aniversario">Aniversario</option>
+                <option value="Cumpleaños">Cumpleaños</option>
+                <option value="Negocios">Negocios</option>
+            </select>
+
+            <textarea id="alergias" placeholder="¿ALGUNA ALERGIA O PREFERENCIA DIETÉTICA?" class="full-width" rows="2"></textarea>
+            
+            <button class="btn-reserva" onclick="enviarReserva()">SOLICITAR RESERVA VIP</button>
+        </div>
+    </div>
+
+    <script>
+        let mesaSeleccionada = null;
+        const API_URL = "https://raiz-api.onrender.com";
+
+        // Generar mesas de forma limpia
+        const contenedor = document.getElementById('mapa-mesas');
+        for (let i = 1; i <= 64; i++) {
+            const div = document.createElement('div');
+            div.className = 'mesa';
+            div.onclick = function() {
+                document.querySelectorAll('.mesa').forEach(m => m.classList.remove('seleccionada'));
+                this.classList.add('seleccionada');
+                mesaSeleccionada = i;
+            }
+            contenedor.appendChild(div);
+        }
+
+        async function enviarReserva() {
+            const nombre = document.getElementById('nombre').value;
+            const celular = document.getElementById('celular').value;
+            const fecha = document.getElementById('fecha').value;
+            const personas = document.getElementById('personas').value;
+            const ocasion = document.getElementById('ocasion').value;
+            const alergias = document.getElementById('alergias').value;
+
+            if (!mesaSeleccionada || !nombre || !celular || !fecha) {
+                alert("Por favor, complete los campos principales y elija su ubicación.");
+                return;
+            }
+            
+            const datos = {
+                nombre, celular, fecha, personas, ocasion, alergias,
+                mesa: mesaSeleccionada,
+                estado: 'Pendiente'
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/reservar`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(datos)
+                });
+                
+                if(response.ok) {
+                    alert("Su solicitud ha sido enviada. Nos comunicaremos a la brevedad.");
+                    location.reload();
+                }
+            } catch (error) {
+                alert("Error de conexión con el servidor.");
+            }
+        }
+    </script>
+</body>
+</html>
