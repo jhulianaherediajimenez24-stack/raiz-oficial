@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel RAÍZ</title>
+    <style>
+        body { background: #0a0a0a; color: white; font-family: sans-serif; padding: 20px; text-align: center; }
+        h1 { color: #c5a059; border-bottom: 2px solid #c5a059; padding-bottom: 10px; }
+        .reserva { background: #1a1a1a; margin: 10px auto; padding: 15px; max-width: 500px; border-radius: 5px; border-left: 5px solid #c5a059; text-align: left; }
+        button { background: #c5a059; color: black; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>PANEL DE RESERVAS</h1>
+    <button onclick="cargar()">ACTUALIZAR RESERVAS</button>
+    <div id="lista"></div>
+
+    <script>
+        async function cargar() {
+            const res = await fetch("https://restaurante-raiz.onrender.com/admin/reservas");
+            const datos = await res.json();
+            const div = document.getElementById('lista');
+            div.innerHTML = "";
+            datos.forEach(r => {
+                div.innerHTML += `<div class="reserva">
+                    <strong>${r.nombre}</strong><br>
+                    📱 ${r.celular} | 📅 ${r.fecha}<br>
+                    📍 ${r.ubicacion} | Estado: ${r.estado}
+                </div>`;
+            });
+        }
+        window.onload = cargar;
+    </script>
+</body>
+</html>
