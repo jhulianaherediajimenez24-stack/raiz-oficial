@@ -3,103 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAÍZ | Reserva de Experiencia</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
+    <title>RAÍZ | Reservar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
     <style>
         :root { --oro: #c5a059; --negro: #0a0a0a; --gris: #121212; }
-        body { background-color: var(--negro); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; padding-bottom: 50px; }
-        
-        header { 
-            height: 40vh; 
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070'); 
-            background-size: cover; background-position: center;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-        }
-        h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: var(--oro); margin: 0; letter-spacing: 12px; font-weight: 400; }
-        .tagline { letter-spacing: 5px; font-size: 0.75rem; color: #888; margin-top: 10px; text-transform: uppercase; }
-
-        .container { max-width: 600px; margin: auto; padding: 40px 20px; }
-        .seccion-titulo { font-family: 'Cinzel', serif; color: var(--oro); text-align: center; font-size: 1.4rem; margin: 40px 0 30px; letter-spacing: 3px; }
-
-        .reserva-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .full-width { grid-column: span 2; }
-        
-        label { font-size: 0.7rem; color: var(--oro); letter-spacing: 2px; text-transform: uppercase; margin-bottom: -15px; }
-
+        body { background-color: var(--negro); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; text-align: center; }
+        header { padding: 50px 20px; border-bottom: 1px solid var(--oro); }
+        h1 { font-family: 'Cinzel', serif; font-size: 3rem; color: var(--oro); margin: 0; letter-spacing: 10px; }
+        .container { max-width: 500px; margin: auto; padding: 40px 20px; }
+        .reserva-form { display: flex; flex-direction: column; gap: 20px; }
         input, select, textarea { 
-            background: transparent; border: none; border-bottom: 1px solid #222; 
-            color: white; padding: 15px 5px; width: 100%; outline: none; 
-            font-family: 'Montserrat', sans-serif; transition: 0.3s; box-sizing: border-box;
-            font-size: 0.9rem;
+            background: transparent; border: none; border-bottom: 1px solid #333; 
+            color: white; padding: 15px 5px; width: 100%; outline: none; font-size: 1rem;
         }
-        input:focus, select:focus, textarea:focus { border-bottom-color: var(--oro); }
-        select { cursor: pointer; color: #ccc; }
-        option { background: var(--negro); color: white; }
-
-        ::placeholder { color: #444; font-size: 0.8rem; letter-spacing: 1px; }
-
+        input:focus, select:focus { border-bottom-color: var(--oro); }
         .btn-reserva { 
-            grid-column: span 2; background: var(--oro); color: #000; 
-            padding: 20px; margin-top: 40px; border: none; cursor: pointer; 
-            font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 3px; transition: 0.3s;
+            background: var(--oro); color: #000; padding: 20px; border: none; 
+            cursor: pointer; font-family: 'Cinzel', serif; font-weight: bold; 
+            letter-spacing: 2px; margin-top: 20px;
         }
-        .btn-reserva:hover { background: #fff; }
-
-        .horario-nota { grid-column: span 2; text-align: center; font-size: 0.75rem; color: #666; margin-top: 10px; }
+        label { font-size: 0.8rem; color: var(--oro); text-align: left; margin-bottom: -10px; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>RAÍZ</h1>
-        <p class="tagline">Fuego · Tierra · Brasa</p>
     </header>
 
     <div class="container">
-        <h2 class="seccion-titulo">Solicitar Reserva</h2>
-        
         <div class="reserva-form">
-            <input type="text" id="nombre" placeholder="NOMBRE COMPLETO" class="full-width">
-            
+            <input type="text" id="nombre" placeholder="NOMBRE COMPLETO">
             <input type="email" id="correo" placeholder="CORREO ELECTRÓNICO">
-            <input type="tel" id="celular" placeholder="TELÉFONO CELULAR">
-
-            <div class="full-width" style="display: flex; flex-direction: column; gap: 20px;">
-                <label>Fecha y Hora (Atención: 12:00 PM - 10:00 PM)</label>
-                <input type="datetime-local" id="fecha" min="2024-01-01T12:00" max="2030-01-01T22:00">
-            </div>
+            <input type="tel" id="celular" placeholder="NÚMERO DE CELULAR">
+            
+            <label>FECHA Y HORA (12:00 PM - 10:00 PM)</label>
+            <input type="datetime-local" id="fecha">
             
             <select id="personas">
                 <option value="" disabled selected>NÚMERO DE PERSONAS</option>
-                <option value="2">2 Personas</option>
-                <option value="4">4 Personas</option>
-                <option value="6">6 Personas</option>
+                <option value="2">2 PERSONAS</option>
+                <option value="4">4 PERSONAS</option>
+                <option value="6">6 PERSONAS</option>
             </select>
 
             <select id="ubicacion">
                 <option value="" disabled selected>POSICIÓN DE LA MESA</option>
-                <option value="Ventana">Cerca a la ventana</option>
-                <option value="Bar">Cerca al bar</option>
-                <option value="Parrilla">Cerca a la parrilla</option>
-                <option value="Cualquiera">Cualquier posición</option>
+                <option value="Ventana">CERCA A LA VENTANA</option>
+                <option value="Bar">CERCA AL BAR</option>
+                <option value="Parrilla">CERCA A LA PARRILLA</option>
+                <option value="Cualquiera">CUALQUIER POSICIÓN</option>
             </select>
 
-            <select id="ocasion" class="full-width">
-                <option value="" disabled selected>OCASIÓN ESPECIAL</option>
-                <option value="Cena">Cena Estándar</option>
-                <option value="Aniversario">Aniversario</option>
-                <option value="Cumpleaños">Cumpleaños</option>
-                <option value="Negocios">Negocios</option>
-            </select>
-
-            <textarea id="alergias" placeholder="¿ALGUNA ALERGIA O PREFERENCIA DIETÉTICA?" class="full-width" rows="2"></textarea>
+            <textarea id="alergias" placeholder="¿ALGUNA ALERGIA O PREFERENCIA?" rows="2"></textarea>
             
-            <button class="btn-reserva" onclick="enviarReserva()">SOLICITAR EXPERIENCIA VIP</button>
-            <p class="horario-nota">Horario de atención: Lunes a Domingo de 12:00 a 22:00</p>
+            <button class="btn-reserva" onclick="enviarReserva()">RESERVAR</button>
         </div>
     </div>
 
     <script>
+        // DIRECCIÓN CORREGIDA PARA TU SERVIDOR
         const API_URL = "https://restaurante-raiz.onrender.com";
 
         async function enviarReserva() {
@@ -109,24 +72,24 @@
             const fechaVal = document.getElementById('fecha').value;
             const personas = document.getElementById('personas').value;
             const ubicacion = document.getElementById('ubicacion').value;
-            
+
             if (!nombre || !correo || !celular || !fechaVal || !ubicacion || !personas) {
-                alert("Por favor, complete todos los campos requeridos.");
+                alert("Por favor, complete todos los campos.");
                 return;
             }
 
-            // Validar Horario
+            // VALIDACIÓN DE HORARIO: 12 PM (12h) A 10 PM (22h)
             const hora = new Date(fechaVal).getHours();
             if (hora < 12 || hora >= 22) {
-                alert("Lo sentimos, solo aceptamos reservas entre las 12:00 PM y las 10:00 PM.");
+                alert("Reservas disponibles solo de 12:00 PM a 10:00 PM.");
                 return;
             }
-            
-            const datos = {
-                nombre, correo, celular, fecha: fechaVal, personas, ubicacion,
-                ocasion: document.getElementById('ocasion').value,
+
+            const datos = { 
+                nombre, correo, celular, fecha: fechaVal, 
+                personas, ubicacion, 
                 alergias: document.getElementById('alergias').value,
-                estado: 'Pendiente'
+                estado: 'Pendiente' 
             };
 
             try {
@@ -135,13 +98,14 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(datos)
                 });
-                
                 if(response.ok) {
-                    alert("Su solicitud ha sido enviada con éxito.");
+                    alert("Reserva enviada con éxito.");
                     location.reload();
+                } else {
+                    alert("Error en el servidor.");
                 }
             } catch (error) {
-                alert("Error de conexión.");
+                alert("Error de conexión. Verifica que tu Web Service en Render esté encendido.");
             }
         }
     </script>
