@@ -9,53 +9,102 @@
         :root { --oro: #c5a059; --negro: #0a0a0a; }
         body { background-color: var(--negro); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; text-align: center; }
         header { 
-            height: 45vh; 
+            height: 35vh; 
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://i.postimg.cc/nz5YS280/file-00000000d4fc71f589f31464c432a1bd.png'); 
             background-size: cover; background-position: center;
             display: flex; justify-content: center; align-items: center; border-bottom: 2px solid var(--oro);
         }
-        h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: var(--oro); letter-spacing: 12px; margin: 0; }
-        .container { max-width: 500px; margin: auto; padding: 40px 20px; }
+        h1 { font-family: 'Cinzel', serif; font-size: 3rem; color: var(--oro); letter-spacing: 10px; margin: 0; }
+        .container { max-width: 500px; margin: auto; padding: 40px 20px; text-align: left; }
+        label { color: var(--oro); font-size: 0.8rem; letter-spacing: 1px; display: block; margin-top: 15px; }
         input, select { 
             background: transparent; border: none; border-bottom: 1px solid #333; 
-            color: white; padding: 12px 5px; width: 100%; outline: none; margin-bottom: 25px;
-            font-family: 'Montserrat', sans-serif;
+            color: white; padding: 10px 5px; width: 100%; outline: none; margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif; box-sizing: border-box;
         }
-        select option { background: var(--negro); }
+        select option { background: var(--negro); color: white; }
         .btn-reserva { 
             background: var(--oro); color: #000; padding: 20px; border: none; width: 100%;
             cursor: pointer; font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 3px;
-            transition: 0.3s; margin-top: 10px;
+            transition: 0.3s; margin-top: 30px;
         }
         .btn-reserva:hover { background: #dfb870; }
+        #especificar_mas { display: none; margin-top: 10px; }
     </style>
 </head>
 <body>
     <header><h1>RAÍZ</h1></header>
     <div class="container">
+        <label>DATOS PERSONALES</label>
         <input type="text" id="nombre" placeholder="NOMBRE COMPLETO">
         <input type="tel" id="celular" placeholder="NÚMERO DE CELULAR">
-        <input type="date" id="fecha_dia">
-        <select id="ubicacion">
-            <option value="" disabled selected>PREFERENCIA DE UBICACIÓN</option>
-            <option value="Ventana">VISTA A LA VENTANA</option>
-            <option value="Parrilla">CERCA A LA PARRILLA</option>
-            <option value="Terraza">TERRAZA</option>
+        <input type="email" id="correo" placeholder="CORREO ELECTRÓNICO">
+
+        <label>DETALLES DE LA RESERVA</label>
+        <input type="date" id="fecha">
+        
+        <select id="hora">
+            <option value="" disabled selected>HORARIO (12 PM - 10 PM)</option>
+            <option value="12:00">12:00 PM</option>
+            <option value="13:00">01:00 PM</option>
+            <option value="14:00">02:00 PM</option>
+            <option value="15:00">03:00 PM</option>
+            <option value="16:00">04:00 PM</option>
+            <option value="17:00">05:00 PM</option>
+            <option value="18:00">06:00 PM</option>
+            <option value="19:00">07:00 PM</option>
+            <option value="20:00">08:00 PM</option>
+            <option value="21:00">09:00 PM</option>
+            <option value="22:00">10:00 PM</option>
         </select>
+
+        <select id="cantidad" onchange="verificarMas(this.value)">
+            <option value="" disabled selected>CANTIDAD DE PERSONAS</option>
+            <option value="2">2 PERSONAS</option>
+            <option value="4">4 PERSONAS</option>
+            <option value="6">6 PERSONAS</option>
+            <option value="Más de 6">MÁS DE 6 (ESPECIFICAR)</option>
+        </select>
+        <input type="text" id="especificar_mas" placeholder="¿CUÁNTAS PERSONAS?">
+
+        <input type="text" id="ocasion" placeholder="OCASIÓN (CUMPLEAÑOS, ANIVERSARIO...)">
+
+        <select id="ubicacion">
+            <option value="" disabled selected>UBICACIÓN DE LA MESA</option>
+            <option value="Parrilla">CERCA A LA PARRILLA</option>
+            <option value="Bar">BAR</option>
+            <option value="Ventanas">VENTANAS</option>
+            <option value="Sin preferencia">SIN PREFERENCIA</option>
+        </select>
+
         <button class="btn-reserva" onclick="enviar()">SOLICITAR RESERVA</button>
     </div>
 
     <script>
+        function verificarMas(valor) {
+            const campo = document.getElementById('especificar_mas');
+            campo.style.display = (valor === "Más de 6") ? "block" : "none";
+        }
+
         async function enviar() {
+            let personas = document.getElementById('cantidad').value;
+            if(personas === "Más de 6") {
+                personas = "Más de 6 (" + document.getElementById('especificar_mas').value + ")";
+            }
+
             const datos = {
                 nombre: document.getElementById('nombre').value,
                 celular: document.getElementById('celular').value,
-                fecha: document.getElementById('fecha_dia').value,
+                correo: document.getElementById('correo').value,
+                fecha: document.getElementById('fecha').value,
+                hora: document.getElementById('hora').value,
+                personas: personas,
+                ocasion: document.getElementById('ocasion').value,
                 ubicacion: document.getElementById('ubicacion').value
             };
 
-            if(!datos.nombre || !datos.celular) {
-                alert("Por favor completa los campos principales");
+            if(!datos.nombre || !datos.celular || !datos.fecha || !datos.hora) {
+                alert("Por favor completa los campos obligatorios");
                 return;
             }
 
@@ -66,13 +115,12 @@
                     body: JSON.stringify(datos)
                 });
                 if(res.ok) {
-                    alert("Solicitud enviada. Nos comunicaremos pronto.");
+                    alert("¡Reserva enviada! Nos pondremos en contacto.");
                     location.reload();
                 }
             } catch(e) {
-                alert("Error de conexión con el servidor");
+                alert("Error al conectar con el servidor.");
             }
         }
     </script>
 </body>
-</html>
