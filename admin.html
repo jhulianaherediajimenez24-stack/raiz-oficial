@@ -15,7 +15,7 @@
         .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem; margin-bottom: 15px; }
         .dato span { color: var(--oro); font-weight: 600; }
         
-        /* Estados */
+        .alergia-box { background: rgba(231, 76, 60, 0.1); border: 1px solid var(--rojo); color: #ff9f94; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 0.85rem; }
         .status-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; }
         .pendiente { background: #555; color: white; }
         .aprobada { background: var(--verde); color: black; }
@@ -25,7 +25,6 @@
         .btn-accion { flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-family: 'Montserrat'; transition: 0.3s; }
         .btn-aprobar { background: var(--verde); color: black; }
         .btn-rechazar { background: var(--rojo); color: white; }
-        .btn-accion:hover { opacity: 0.8; transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -44,23 +43,28 @@
                 contenedor.innerHTML = "";
 
                 reservas.reverse().forEach((r, index) => {
-                    // El index real en la lista original (porque usamos reverse)
                     const originalIndex = reservas.length - 1 - index;
                     const card = document.createElement('div');
                     card.className = 'reserva-card';
                     
-                    // Color de borde según estado
                     if(r.estado === 'Aprobada') card.style.borderLeftColor = "var(--verde)";
                     if(r.estado === 'Rechazada') card.style.borderLeftColor = "var(--rojo)";
 
                     card.innerHTML = `
                         <div class="status-badge ${r.estado.toLowerCase()}">${r.estado}</div>
                         <h3 class="nombre-cliente">${r.nombre}</h3>
+                        
                         <div class="grid-info">
                             <div class="dato"><span>📱 Cel:</span> ${r.celular}</div>
                             <div class="dato"><span>⏰ Hora:</span> ${r.hora}</div>
+                            <div class="dato"><span>📅 Fecha:</span> ${r.fecha}</div>
                             <div class="dato"><span>👥 Personas:</span> ${r.personas}</div>
                             <div class="dato"><span>📍 Mesa:</span> ${r.ubicacion}</div>
+                            <div class="dato"><span>✨ Ocasión:</span> ${r.ocasion}</div>
+                        </div>
+
+                        <div class="alergia-box">
+                            <strong>⚠️ ALERGIAS/NOTAS:</strong> ${r.alergias || 'Ninguna'}
                         </div>
                         
                         ${r.estado === 'Pendiente' ? `
@@ -72,19 +76,18 @@
                     `;
                     contenedor.appendChild(card);
                 });
-            } catch (e) { alert("Error al cargar reservas."); }
+            } catch (e) { alert("Error al cargar."); }
         }
 
         async function decidir(id, nuevoEstado) {
             try {
-                // Aquí usamos una ruta que ya creamos en el app.py
                 const res = await fetch(`${API_URL}/admin/confirmar/${id}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ estado: nuevoEstado })
                 });
                 if(res.ok) cargar();
-            } catch(e) { alert("Error al procesar."); }
+            } catch(e) { alert("Error."); }
         }
 
         window.onload = cargar;
