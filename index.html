@@ -3,133 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAÍZ | Fuego, Tierra y Brasa</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <title>RAÍZ | Fuego y Brasa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        :root { --oro: #d4af37; --fondo: #0a0a0a; --gris: #1a1a1a; --texto: #f4f4f4; }
-        body { background: var(--fondo); color: var(--texto); font-family: 'Montserrat', sans-serif; margin: 0; }
-        h1, h2, h3 { font-family: 'Playfair Display', serif; color: var(--oro); text-transform: uppercase; text-align: center; }
+        :root { --oro: #c5a059; --oro-oscuro: #8e6d31; --negro: #0a0a0a; --gris: #1a1a1a; }
+        body { background-color: var(--negro); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; line-height: 1.6; }
         
-        .hero { 
-            height: 50vh; 
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070'); 
+        /* HEADER LUXURY */
+        header { 
+            height: 80vh; 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=2069'); 
             background-size: cover; background-position: center;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            border-bottom: 3px solid var(--oro);
         }
+        h1 { font-family: 'Cinzel', serif; font-size: 5rem; color: var(--oro); margin: 0; letter-spacing: 10px; }
+        .subtitle { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 5px; color: #ccc; }
 
-        .container { max-width: 1100px; margin: auto; padding: 20px; }
+        .container { max-width: 1200px; margin: auto; padding: 60px 20px; }
+
+        /* SECCIONES DE LA CARTA */
+        .seccion-titulo { font-family: 'Cinzel', serif; color: var(--oro); text-align: center; font-size: 2.5rem; margin-bottom: 40px; border-bottom: 1px solid var(--oro-oscuro); display: inline-block; width: 100%; }
         
-        /* MAPA DE MESAS */
-        .mapa-container { background: var(--gris); padding: 20px; border-radius: 10px; border: 1px solid var(--oro); margin: 40px 0; }
+        .grid-carta { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px; }
+        .plato-card { background: var(--gris); padding: 20px; border: 1px solid #333; transition: 0.3s; position: relative; }
+        .plato-card:hover { border-color: var(--oro); transform: translateY(-5px); }
+        .plato-card h3 { color: var(--oro); margin-top: 0; font-family: 'Cinzel', serif; }
+        .precio { position: absolute; top: 20px; right: 20px; font-weight: bold; color: #fff; }
+
+        /* MAPA DE MESAS PROFESIONAL */
+        .salon-container { background: #111; padding: 40px; border-radius: 15px; border: 1px solid var(--oro-oscuro); text-align: center; }
         .grid-mesas { 
             display: grid; 
             grid-template-columns: repeat(8, 1fr); 
-            gap: 10px; 
-            margin-top: 20px;
+            gap: 15px; 
+            margin: 30px 0;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            padding: 20px; border-radius: 10px;
         }
         .mesa { 
-            aspect-ratio: 1; border: 1px solid #444; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; font-size: 0.7em; cursor: pointer; border-radius: 4px;
+            aspect-ratio: 1; border: 2px solid var(--oro-oscuro); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 0.8rem; cursor: pointer; transition: 0.3s; color: var(--oro);
         }
-        .libre { border-color: var(--oro); color: var(--oro); }
-        .ocupada { background: #333; color: #777; cursor: not-allowed; border: none; }
-        .seleccionada { background: var(--oro); color: black; font-weight: bold; }
+        .mesa:hover { background: var(--oro-oscuro); color: white; }
+        .mesa.seleccionada { background: var(--oro); color: black; border-color: white; transform: scale(1.1); box-shadow: 0 0 15px var(--oro); }
 
-        /* CARTA */
-        .grid-carta { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .plato { background: var(--gris); padding: 15px; border-radius: 5px; border-left: 3px solid var(--oro); }
-        .precio { float: right; color: white; }
-
-        .form-reserva { background: var(--gris); padding: 30px; border-radius: 10px; margin-top: 40px; border: 1px solid var(--oro); }
-        .btn-enviar { background: var(--oro); color: black; width: 100%; padding: 20px; font-weight: bold; border: none; cursor: pointer; margin-top: 20px; }
+        /* FORMULARIO */
+        .reserva-box { background: var(--gris); padding: 40px; margin-top: 50px; border-top: 4px solid var(--oro); }
+        input, select { background: #000; border: 1px solid #444; color: white; padding: 12px; width: 100%; margin-bottom: 15px; border-radius: 5px; }
+        .btn-gold { background: var(--oro); color: black; font-weight: bold; padding: 20px; width: 100%; border: none; cursor: pointer; font-size: 1.1rem; text-transform: uppercase; }
+        .btn-gold:hover { background: white; }
     </style>
 </head>
 <body>
 
-    <section class="hero">
+    <header>
+        <p class="subtitle">Bienvenido a</p>
         <h1>RAÍZ</h1>
-        <p>RESTAURANTE DE AUTOR | 360m² de Experiencia</p>
-    </section>
+        <p class="subtitle">Fuego · Tierra · Brasa</p>
+    </header>
 
     <div class="container">
-        <div class="mapa-container">
-            <h2>Mapa del Salón (64 Mesas)</h2>
-            <p style="text-align:center; font-size: 0.8em;">Selecciona tu mesa: Dorado (Libre) | Gris (Ocupada)</p>
-            <div id="mapa" class="grid-mesas"></div>
+        <h2 class="seccion-titulo">Cortes Premium</h2>
+        <div class="grid-carta">
+            <div class="plato-card">
+                <span class="precio">S/98</span>
+                <h3>Ojo de Bife (400g)</h3>
+                <p>Madurado 21 días, brasa de quebracho blanco.</p>
+                <input type="checkbox" class="check-plato" value="Ojo de Bife"> Seleccionar
+            </div>
+            <div class="plato-card">
+                <span class="precio">S/120</span>
+                <h3>Tomahawk Steak</h3>
+                <p>El rey de la casa. Servido con sal de Maras.</p>
+                <input type="checkbox" class="check-plato" value="Tomahawk"> Seleccionar
+            </div>
+            <div class="plato-card">
+                <span class="precio">S/45</span>
+                <h3>Pulpo a la Parrilla</h3>
+                <p>Chimichurri de la casa y papas nativas.</p>
+                <input type="checkbox" class="check-plato" value="Pulpo"> Seleccionar
+            </div>
         </div>
 
-        <h2>Nuestra Carta</h2>
-        <div class="grid-carta">
-            <div class="plato">
-                <span class="precio">S/43</span>
-                <h3>Carpaccio de Lomo</h3>
-                <p>Finas láminas de lomo, oliva y alcaparras.</p>
-                <input type="checkbox" class="plato-sel" value="Carpaccio"> Pedir este plato
-            </div>
-            <div class="plato">
-                <span class="precio">S/90</span>
-                <h3>Lomo Fino (350g)</h3>
-                <p>Corte premium a la brasa con mantequilla artesanal.</p>
-                <input type="checkbox" class="plato-sel" value="Lomo Fino"> Pedir este plato
-            </div>
-            </div>
+        <div class="salon-container">
+            <h2 style="color:var(--oro); font-family:'Cinzel'">Plano del Salón</h2>
+            <p>Seleccione una de las 64 mesas para su experiencia</p>
+            <div id="mapa-mesas" class="grid-mesas"></div>
+        </div>
 
-        <div class="form-reserva">
-            <h3>Finalizar Reserva</h3>
-            <input type="hidden" id="mesa-final">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <input type="text" id="nombre" placeholder="Tu Nombre" required>
-                <input type="tel" id="tel" placeholder="WhatsApp" required>
-                <input type="datetime-local" id="fecha" required>
-                <select id="ocasion">
-                    <option>Cena Normal</option>
-                    <option>Aniversario</option>
-                    <option>Cumpleaños</option>
+        <div class="reserva-box">
+            <h2 style="text-align:center; color:var(--oro)">Detalles de Reserva</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <input type="text" id="nombre" placeholder="Nombre completo">
+                <input type="datetime-local" id="fecha">
+                <select id="personas">
+                    <option value="2">2 Personas</option>
+                    <option value="4">4 Personas</option>
+                    <option value="6">6 Personas</option>
+                </select>
+                <select id="termino">
+                    <option>Término Medio</option>
+                    <option>Tres Cuartos</option>
+                    <option>Bien Cocido</option>
                 </select>
             </div>
-            <button class="btn-enviar" onclick="confirmarTodo()">CONFIRMAR MESA Y PEDIDO</button>
+            <button class="btn-gold" onclick="enviarWhatsApp()">Confirmar Reserva VIP</button>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://restaurante-raiz.onrender.com"; // LA CAMBIAREMOS LUEGO
         let mesaSeleccionada = null;
 
-        // Generar 64 mesas según tu plano
-        async function cargarMapa() {
-            const contenedor = document.getElementById('mapa');
-            // Aquí llamaríamos a la API para ver cuáles están ocupadas
-            for (let i = 1; i <= 64; i++) {
-                const div = document.createElement('div');
-                div.className = 'mesa libre';
-                let cap = i <= 16 ? 2 : (i <= 48 ? 4 : 6);
-                div.innerHTML = `M${i}<br>${cap}p`;
-                div.onclick = () => {
-                    if (mesaSeleccionada) document.querySelectorAll('.mesa').forEach(m => m.classList.remove('seleccionada'));
-                    mesaSeleccionada = i;
-                    div.classList.add('seleccionada');
-                    document.getElementById('mesa-final').value = i;
-                };
-                contenedor.appendChild(div);
+        // Dibujar las 64 mesas
+        const contenedor = document.getElementById('mapa-mesas');
+        for (let i = 1; i <= 64; i++) {
+            const div = document.createElement('div');
+            div.className = 'mesa';
+            div.innerText = i;
+            div.onclick = function() {
+                document.querySelectorAll('.mesa').forEach(m => m.classList.remove('seleccionada'));
+                this.classList.add('seleccionada');
+                mesaSeleccionada = i;
             }
+            contenedor.appendChild(div);
         }
 
-        function confirmarTodo() {
-            const num = "51970869946";
-            const nombre = document.getElementById('nombre').value;
-            const mesa = mesaSeleccionada;
-            const fecha = document.getElementById('fecha').value;
+        function enviarWhatsApp() {
+            if (!mesaSeleccionada) { alert("Por favor, selecciona una mesa en el plano."); return; }
             
-            if(!mesa) return alert("Por favor, selecciona una mesa en el mapa");
-
+            const nombre = document.getElementById('nombre').value;
+            const fecha = document.getElementById('fecha').value;
+            const pers = document.getElementById('personas').value;
+            const term = document.getElementById('termino').value;
+            
             let platos = [];
-            document.querySelectorAll('.plato-sel:checked').forEach(p => platos.push(p.value));
+            document.querySelectorAll('.check-plato:checked').forEach(p => platos.push(p.value));
 
-            const msg = `*RESERVA RAÍZ*%0A*Nombre:* ${nombre}%0A*Mesa:* ${mesa}%0A*Fecha:* ${fecha}%0A*Pedido:* ${platos.join(', ')}`;
-            window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+            const texto = `*NUEVA RESERVA RAÍZ*%0A--------------------------%0A*Cliente:* ${nombre}%0A*Mesa:* ${mesaSeleccionada}%0A*Personas:* ${pers}%0A*Fecha:* ${fecha}%0A*Término:* ${term}%0A*Pedido:* ${platos.join(", ")}`;
+            
+            window.open(`https://wa.me/51970869946?text=${texto}`, '_blank');
         }
-
-        window.onload = cargarMapa;
     </script>
 </body>
 </html>
