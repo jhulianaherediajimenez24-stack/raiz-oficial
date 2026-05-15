@@ -9,33 +9,38 @@
         :root { --oro: #c5a059; --negro: #0a0a0a; }
         body { background-color: var(--negro); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; text-align: center; }
         header { 
-            height: 40vh; 
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://i.postimg.cc/nz5YS280/file-00000000d4fc71f589f31464c432a1bd.png'); 
+            height: 45vh; 
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://i.postimg.cc/nz5YS280/file-00000000d4fc71f589f31464c432a1bd.png'); 
             background-size: cover; background-position: center;
             display: flex; justify-content: center; align-items: center; border-bottom: 2px solid var(--oro);
         }
-        h1 { font-family: 'Cinzel', serif; font-size: 3rem; color: var(--oro); letter-spacing: 10px; }
-        .container { max-width: 400px; margin: auto; padding: 30px 20px; }
+        h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: var(--oro); letter-spacing: 12px; margin: 0; }
+        .container { max-width: 500px; margin: auto; padding: 40px 20px; }
         input, select { 
-            background: transparent; border: none; border-bottom: 1px solid #444; 
-            color: white; padding: 10px; width: 100%; outline: none; margin-bottom: 20px;
+            background: transparent; border: none; border-bottom: 1px solid #333; 
+            color: white; padding: 12px 5px; width: 100%; outline: none; margin-bottom: 25px;
+            font-family: 'Montserrat', sans-serif;
         }
+        select option { background: var(--negro); }
         .btn-reserva { 
-            background: var(--oro); color: #000; padding: 15px; border: none; width: 100%;
-            cursor: pointer; font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 2px;
+            background: var(--oro); color: #000; padding: 20px; border: none; width: 100%;
+            cursor: pointer; font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 3px;
+            transition: 0.3s; margin-top: 10px;
         }
+        .btn-reserva:hover { background: #dfb870; }
     </style>
 </head>
 <body>
     <header><h1>RAÍZ</h1></header>
     <div class="container">
         <input type="text" id="nombre" placeholder="NOMBRE COMPLETO">
-        <input type="tel" id="celular" placeholder="CELULAR">
-        <input type="date" id="fecha">
+        <input type="tel" id="celular" placeholder="NÚMERO DE CELULAR">
+        <input type="date" id="fecha_dia">
         <select id="ubicacion">
+            <option value="" disabled selected>PREFERENCIA DE UBICACIÓN</option>
+            <option value="Ventana">VISTA A LA VENTANA</option>
+            <option value="Parrilla">CERCA A LA PARRILLA</option>
             <option value="Terraza">TERRAZA</option>
-            <option value="Salón Principal">SALÓN PRINCIPAL</option>
-            <option value="Bar">BAR</option>
         </select>
         <button class="btn-reserva" onclick="enviar()">SOLICITAR RESERVA</button>
     </div>
@@ -45,9 +50,14 @@
             const datos = {
                 nombre: document.getElementById('nombre').value,
                 celular: document.getElementById('celular').value,
-                fecha: document.getElementById('fecha').value,
+                fecha: document.getElementById('fecha_dia').value,
                 ubicacion: document.getElementById('ubicacion').value
             };
+
+            if(!datos.nombre || !datos.celular) {
+                alert("Por favor completa los campos principales");
+                return;
+            }
 
             try {
                 const res = await fetch("https://restaurante-raiz.onrender.com/reservar", {
@@ -55,8 +65,13 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(datos)
                 });
-                if(res.ok) alert("¡Reserva enviada con éxito!");
-            } catch(e) { alert("Error al conectar con el servidor."); }
+                if(res.ok) {
+                    alert("Solicitud enviada. Nos comunicaremos pronto.");
+                    location.reload();
+                }
+            } catch(e) {
+                alert("Error de conexión con el servidor");
+            }
         }
     </script>
 </body>
