@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAÍZ | Experiencia Gastronómica</title>
+    <title>RAÍZ | Reserva de Experiencia</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
     <style>
         :root { --oro: #c5a059; --negro: #0a0a0a; --gris: #121212; }
         body { background-color: var(--negro); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; padding-bottom: 50px; }
         
         header { 
-            height: 50vh; 
+            height: 45vh; 
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070'); 
             background-size: cover; background-position: center;
             display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
@@ -18,55 +18,33 @@
         h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: var(--oro); margin: 0; letter-spacing: 12px; font-weight: 400; }
         .tagline { letter-spacing: 5px; font-size: 0.75rem; color: #888; margin-top: 10px; text-transform: uppercase; }
 
-        .container { max-width: 800px; margin: auto; padding: 20px; }
-        .seccion-titulo { font-family: 'Cinzel', serif; color: var(--oro); text-align: center; font-size: 1.3rem; margin: 40px 0 20px; letter-spacing: 3px; }
+        .container { max-width: 600px; margin: auto; padding: 40px 20px; }
+        .seccion-titulo { font-family: 'Cinzel', serif; color: var(--oro); text-align: center; font-size: 1.4rem; margin: 40px 0 30px; letter-spacing: 3px; }
 
-        /* DISEÑO DEL SALÓN CON REFERENCIAS */
-        .salon-wrapper { 
-            position: relative; 
-            background: #0f0f0f; 
-            padding: 60px 40px; 
-            border-radius: 8px; 
-            border: 1px solid #1a1a1a;
-            margin: 30px 0;
-        }
-
-        /* Referencias visuales: Barra y Parrilla */
-        .referencia { 
-            position: absolute; 
-            font-family: 'Cinzel', serif; 
-            font-size: 0.7rem; 
-            color: var(--oro); 
-            letter-spacing: 4px; 
-            opacity: 0.6;
-            text-transform: uppercase;
-        }
-        .ref-parrilla { top: 15px; left: 50%; transform: translateX(-50%); border-bottom: 1px solid var(--oro); width: 60%; text-align: center; padding-bottom: 5px; }
-        .ref-barra { bottom: 15px; left: 50%; transform: translateX(-50%); border-top: 1px solid var(--oro); width: 60%; text-align: center; padding-top: 5px; }
-
-        .grid-mesas { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; }
-        .mesa { 
-            aspect-ratio: 1; border: 1px solid #222; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: 0.4s;
-        }
-        .mesa:hover { border-color: var(--oro); }
-        .mesa.seleccionada { background: var(--oro); border-color: var(--oro); }
-
-        /* Formulario */
-        .reserva-form { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        /* Formulario Luxury */
+        .reserva-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .full-width { grid-column: span 2; }
+        
         input, select, textarea { 
             background: transparent; border: none; border-bottom: 1px solid #222; 
-            color: white; padding: 12px 5px; width: 100%; outline: none; 
-            font-family: 'Montserrat', sans-serif; font-size: 0.9rem;
+            color: white; padding: 15px 5px; width: 100%; outline: none; 
+            font-family: 'Montserrat', sans-serif; transition: 0.3s; box-sizing: border-box;
+            font-size: 0.9rem;
         }
-        input:focus { border-bottom-color: var(--oro); }
+        input:focus, select:focus, textarea:focus { border-bottom-color: var(--oro); }
+        select { cursor: pointer; color: #ccc; }
+        option { background: var(--negro); color: white; }
+
+        ::placeholder { color: #444; font-size: 0.8rem; letter-spacing: 1px; }
+
         .btn-reserva { 
             grid-column: span 2; background: var(--oro); color: #000; 
-            padding: 18px; margin-top: 30px; border: none; cursor: pointer; 
-            font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 2px;
+            padding: 20px; margin-top: 40px; border: none; cursor: pointer; 
+            font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 3px; transition: 0.3s;
         }
+        .btn-reserva:hover { background: #fff; }
+
+        .nota-admin { text-align: center; font-size: 0.7rem; color: #444; margin-top: 20px; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -77,92 +55,13 @@
     </header>
 
     <div class="container">
-        <div class="mapa-section">
-            <h2 class="seccion-titulo">Ubicación en el Salón</h2>
-            <div class="salon-wrapper">
-                <div class="referencia ref-parrilla">ZONA DE PARRILLAS</div>
-                
-                <div id="mapa-mesas" class="grid-mesas"></div>
-                
-                <div class="referencia ref-barra">ZONA DE BARRA</div>
-            </div>
-        </div>
-
-        <h2 class="seccion-titulo">Detalles de su Experiencia</h2>
+        <h2 class="seccion-titulo">Solicitar Reserva</h2>
+        
         <div class="reserva-form">
             <input type="text" id="nombre" placeholder="NOMBRE COMPLETO" class="full-width">
-            <input type="tel" id="celular" placeholder="NÚMERO DE CELULAR">
+            <input type="tel" id="celular" placeholder="TELÉFONO CELULAR">
             <input type="datetime-local" id="fecha">
             
             <select id="personas">
-                <option value="" disabled selected>PERSONAS</option>
-                <option value="1-2">1 - 2</option>
-                <option value="3-4">3 - 4</option>
-                <option value="5-6">5 - 6</option>
-            </select>
-
-            <select id="ocasion">
-                <option value="" disabled selected>OCASIÓN</option>
-                <option value="Cena">Cena</option>
-                <option value="Aniversario">Aniversario</option>
-                <option value="Cumpleaños">Cumpleaños</option>
-                <option value="Negocios">Negocios</option>
-            </select>
-
-            <textarea id="alergias" placeholder="¿ALERGÍAS O PREFERENCIAS DIETÉTICAS?" class="full-width" rows="2"></textarea>
-            
-            <button class="btn-reserva" onclick="enviarReserva()">RESERVAR EXPERIENCIA</button>
-        </div>
-    </div>
-
-    <script>
-        let mesaSeleccionada = null;
-        const API_URL = "https://raiz-api.onrender.com";
-
-        const contenedor = document.getElementById('mapa-mesas');
-        for (let i = 1; i <= 64; i++) {
-            const div = document.createElement('div');
-            div.className = 'mesa';
-            div.onclick = function() {
-                document.querySelectorAll('.mesa').forEach(m => m.classList.remove('seleccionada'));
-                this.classList.add('seleccionada');
-                mesaSeleccionada = i;
-            }
-            contenedor.appendChild(div);
-        }
-
-        async function enviarReserva() {
-            const nombre = document.getElementById('nombre').value;
-            const celular = document.getElementById('celular').value;
-            const fecha = document.getElementById('fecha').value;
-            
-            if (!mesaSeleccionada || !nombre || !celular || !fecha) {
-                alert("Por favor, complete los datos y elija su lugar."); return;
-            }
-            
-            const datos = {
-                nombre, celular, fecha, 
-                personas: document.getElementById('personas').value,
-                ocasion: document.getElementById('ocasion').value,
-                alergias: document.getElementById('alergias').value,
-                mesa: mesaSeleccionada,
-                estado: 'Pendiente'
-            };
-
-            try {
-                const response = await fetch(`${API_URL}/reservar`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(datos)
-                });
-                if(response.ok) {
-                    alert("Solicitud enviada con éxito.");
-                    location.reload();
-                }
-            } catch (error) {
-                alert("Error al conectar.");
-            }
-        }
-    </script>
-</body>
-</html>
+                <option value="" disabled selected>NÚMERO DE PERSONAS</option>
+                <option value="
