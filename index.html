@@ -10,46 +10,63 @@
         body { background-color: var(--negro); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; padding-bottom: 50px; }
         
         header { 
-            height: 60vh; 
+            height: 50vh; 
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070'); 
             background-size: cover; background-position: center;
             display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
         }
-        h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: var(--oro); margin: 0; letter-spacing: 15px; font-weight: 400; }
-        .tagline { letter-spacing: 6px; font-size: 0.8rem; color: #888; margin-top: 15px; text-transform: uppercase; }
+        h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: var(--oro); margin: 0; letter-spacing: 12px; font-weight: 400; }
+        .tagline { letter-spacing: 5px; font-size: 0.75rem; color: #888; margin-top: 10px; text-transform: uppercase; }
 
-        .container { max-width: 800px; margin: auto; padding: 40px 20px; }
-        .seccion-titulo { font-family: 'Cinzel', serif; color: var(--oro); text-align: center; font-size: 1.5rem; margin: 50px 0 30px; letter-spacing: 3px; }
+        .container { max-width: 800px; margin: auto; padding: 20px; }
+        .seccion-titulo { font-family: 'Cinzel', serif; color: var(--oro); text-align: center; font-size: 1.3rem; margin: 40px 0 20px; letter-spacing: 3px; }
 
-        /* Mapa Visual */
-        .mapa-instruccion { text-align: center; font-size: 0.8rem; color: #666; text-transform: uppercase; letter-spacing: 2px; }
-        .grid-mesas { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; margin: 30px 0; padding: 20px; background: #0f0f0f; border-radius: 4px; }
+        /* DISEÑO DEL SALÓN CON REFERENCIAS */
+        .salon-wrapper { 
+            position: relative; 
+            background: #0f0f0f; 
+            padding: 60px 40px; 
+            border-radius: 8px; 
+            border: 1px solid #1a1a1a;
+            margin: 30px 0;
+        }
+
+        /* Referencias visuales: Barra y Parrilla */
+        .referencia { 
+            position: absolute; 
+            font-family: 'Cinzel', serif; 
+            font-size: 0.7rem; 
+            color: var(--oro); 
+            letter-spacing: 4px; 
+            opacity: 0.6;
+            text-transform: uppercase;
+        }
+        .ref-parrilla { top: 15px; left: 50%; transform: translateX(-50%); border-bottom: 1px solid var(--oro); width: 60%; text-align: center; padding-bottom: 5px; }
+        .ref-barra { bottom: 15px; left: 50%; transform: translateX(-50%); border-top: 1px solid var(--oro); width: 60%; text-align: center; padding-top: 5px; }
+
+        .grid-mesas { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; }
         .mesa { 
             aspect-ratio: 1; border: 1px solid #222; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: 0.5s;
+            cursor: pointer; transition: 0.4s;
         }
         .mesa:hover { border-color: var(--oro); }
-        .mesa.seleccionada { background: var(--oro); border-color: var(--oro); box-shadow: 0 0 15px rgba(197, 160, 89, 0.3); }
+        .mesa.seleccionada { background: var(--oro); border-color: var(--oro); }
 
-        /* Formulario Elegante */
-        .reserva-form { margin-top: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        /* Formulario */
+        .reserva-form { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full-width { grid-column: span 2; }
-        
         input, select, textarea { 
             background: transparent; border: none; border-bottom: 1px solid #222; 
-            color: white; padding: 15px 5px; width: 100%; outline: none; 
-            font-family: 'Montserrat', sans-serif; transition: 0.3s; box-sizing: border-box;
+            color: white; padding: 12px 5px; width: 100%; outline: none; 
+            font-family: 'Montserrat', sans-serif; font-size: 0.9rem;
         }
-        input:focus, select:focus, textarea:focus { border-bottom-color: var(--oro); }
-        ::placeholder { color: #444; font-size: 0.8rem; letter-spacing: 1px; }
-
+        input:focus { border-bottom-color: var(--oro); }
         .btn-reserva { 
             grid-column: span 2; background: var(--oro); color: #000; 
-            padding: 20px; margin-top: 40px; border: none; cursor: pointer; 
-            font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 3px; transition: 0.3s;
+            padding: 18px; margin-top: 30px; border: none; cursor: pointer; 
+            font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 2px;
         }
-        .btn-reserva:hover { background: #fff; }
     </style>
 </head>
 <body>
@@ -61,36 +78,40 @@
 
     <div class="container">
         <div class="mapa-section">
-            <h2 class="seccion-titulo">Seleccione su ubicación</h2>
-            <p class="mapa-instruccion">Toque el círculo para elegir su lugar</p>
-            <div id="mapa-mesas" class="grid-mesas"></div>
+            <h2 class="seccion-titulo">Ubicación en el Salón</h2>
+            <div class="salon-wrapper">
+                <div class="referencia ref-parrilla">ZONA DE PARRILLAS</div>
+                
+                <div id="mapa-mesas" class="grid-mesas"></div>
+                
+                <div class="referencia ref-barra">ZONA DE BARRA</div>
+            </div>
         </div>
 
-        <h2 class="seccion-titulo">Detalles de la reserva</h2>
+        <h2 class="seccion-titulo">Detalles de su Experiencia</h2>
         <div class="reserva-form">
             <input type="text" id="nombre" placeholder="NOMBRE COMPLETO" class="full-width">
-            <input type="tel" id="celular" placeholder="TELÉFONO CELULAR">
+            <input type="tel" id="celular" placeholder="NÚMERO DE CELULAR">
             <input type="datetime-local" id="fecha">
             
             <select id="personas">
-                <option value="" disabled selected>NÚMERO DE PERSONAS</option>
-                <option value="1-2">1 - 2 Personas</option>
-                <option value="3-4">3 - 4 Personas</option>
-                <option value="5-6">5 - 6 Personas</option>
-                <option value="7+">Más de 6</option>
+                <option value="" disabled selected>PERSONAS</option>
+                <option value="1-2">1 - 2</option>
+                <option value="3-4">3 - 4</option>
+                <option value="5-6">5 - 6</option>
             </select>
 
             <select id="ocasion">
-                <option value="" disabled selected>OCASIÓN ESPECIAL</option>
-                <option value="Cena">Cena Estándar</option>
+                <option value="" disabled selected>OCASIÓN</option>
+                <option value="Cena">Cena</option>
                 <option value="Aniversario">Aniversario</option>
                 <option value="Cumpleaños">Cumpleaños</option>
                 <option value="Negocios">Negocios</option>
             </select>
 
-            <textarea id="alergias" placeholder="¿ALGUNA ALERGIA O PREFERENCIA DIETÉTICA?" class="full-width" rows="2"></textarea>
+            <textarea id="alergias" placeholder="¿ALERGÍAS O PREFERENCIAS DIETÉTICAS?" class="full-width" rows="2"></textarea>
             
-            <button class="btn-reserva" onclick="enviarReserva()">SOLICITAR RESERVA VIP</button>
+            <button class="btn-reserva" onclick="enviarReserva()">RESERVAR EXPERIENCIA</button>
         </div>
     </div>
 
@@ -98,7 +119,6 @@
         let mesaSeleccionada = null;
         const API_URL = "https://raiz-api.onrender.com";
 
-        // Generar mesas de forma limpia
         const contenedor = document.getElementById('mapa-mesas');
         for (let i = 1; i <= 64; i++) {
             const div = document.createElement('div');
@@ -115,17 +135,16 @@
             const nombre = document.getElementById('nombre').value;
             const celular = document.getElementById('celular').value;
             const fecha = document.getElementById('fecha').value;
-            const personas = document.getElementById('personas').value;
-            const ocasion = document.getElementById('ocasion').value;
-            const alergias = document.getElementById('alergias').value;
-
+            
             if (!mesaSeleccionada || !nombre || !celular || !fecha) {
-                alert("Por favor, complete los campos principales y elija su ubicación.");
-                return;
+                alert("Por favor, complete los datos y elija su lugar."); return;
             }
             
             const datos = {
-                nombre, celular, fecha, personas, ocasion, alergias,
+                nombre, celular, fecha, 
+                personas: document.getElementById('personas').value,
+                ocasion: document.getElementById('ocasion').value,
+                alergias: document.getElementById('alergias').value,
                 mesa: mesaSeleccionada,
                 estado: 'Pendiente'
             };
@@ -136,13 +155,12 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(datos)
                 });
-                
                 if(response.ok) {
-                    alert("Su solicitud ha sido enviada. Nos comunicaremos a la brevedad.");
+                    alert("Solicitud enviada con éxito.");
                     location.reload();
                 }
             } catch (error) {
-                alert("Error de conexión con el servidor.");
+                alert("Error al conectar.");
             }
         }
     </script>
