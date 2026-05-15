@@ -13,6 +13,7 @@
         .reserva-card { background: var(--gris); margin-bottom: 20px; padding: 25px; border-radius: 8px; border-left: 5px solid #444; position: relative; }
         .nombre-cliente { color: var(--oro); font-family: 'Cinzel', serif; font-size: 1.5rem; margin: 0 0 10px 0; }
         .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem; margin-bottom: 15px; }
+        .dato { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .dato span { color: var(--oro); font-weight: 600; }
         
         .alergia-box { background: rgba(231, 76, 60, 0.1); border: 1px solid var(--rojo); color: #ff9f94; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 0.85rem; }
@@ -22,7 +23,7 @@
         .rechazada { background: var(--rojo); color: white; }
 
         .acciones { display: flex; gap: 10px; }
-        .btn-accion { flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-family: 'Montserrat'; transition: 0.3s; }
+        .btn-accion { flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-aprobar { background: var(--verde); color: black; }
         .btn-rechazar { background: var(--rojo); color: white; }
     </style>
@@ -56,6 +57,7 @@
                         
                         <div class="grid-info">
                             <div class="dato"><span>📱 Cel:</span> ${r.celular}</div>
+                            <div class="dato"><span>📧 Correo:</span> ${r.correo || 'No provisto'}</div>
                             <div class="dato"><span>⏰ Hora:</span> ${r.hora}</div>
                             <div class="dato"><span>📅 Fecha:</span> ${r.fecha}</div>
                             <div class="dato"><span>👥 Personas:</span> ${r.personas}</div>
@@ -64,7 +66,7 @@
                         </div>
 
                         <div class="alergia-box">
-                            <strong>⚠️ ALERGIAS/NOTAS:</strong> ${r.alergias || 'Ninguna'}
+                            <strong>⚠️ ALERGIAS:</strong> ${r.alergias}
                         </div>
                         
                         ${r.estado === 'Pendiente' ? `
@@ -76,17 +78,17 @@
                     `;
                     contenedor.appendChild(card);
                 });
-            } catch (e) { alert("Error al cargar."); }
+            } catch (e) { console.error(e); }
         }
 
         async function decidir(id, nuevoEstado) {
             try {
-                const res = await fetch(`${API_URL}/admin/confirmar/${id}`, {
+                await fetch(`${API_URL}/admin/confirmar/${id}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ estado: nuevoEstado })
                 });
-                if(res.ok) cargar();
+                cargar();
             } catch(e) { alert("Error."); }
         }
 
