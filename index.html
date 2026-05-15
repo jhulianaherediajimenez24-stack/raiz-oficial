@@ -10,7 +10,7 @@
         body { background-color: var(--negro); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; padding-bottom: 50px; }
         
         header { 
-            height: 45vh; 
+            height: 40vh; 
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070'); 
             background-size: cover; background-position: center;
             display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
@@ -21,10 +21,11 @@
         .container { max-width: 600px; margin: auto; padding: 40px 20px; }
         .seccion-titulo { font-family: 'Cinzel', serif; color: var(--oro); text-align: center; font-size: 1.4rem; margin: 40px 0 30px; letter-spacing: 3px; }
 
-        /* Formulario Luxury */
         .reserva-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .full-width { grid-column: span 2; }
         
+        label { font-size: 0.7rem; color: var(--oro); letter-spacing: 2px; text-transform: uppercase; margin-bottom: -15px; }
+
         input, select, textarea { 
             background: transparent; border: none; border-bottom: 1px solid #222; 
             color: white; padding: 15px 5px; width: 100%; outline: none; 
@@ -44,7 +45,7 @@
         }
         .btn-reserva:hover { background: #fff; }
 
-        .nota-admin { text-align: center; font-size: 0.7rem; color: #444; margin-top: 20px; letter-spacing: 1px; }
+        .horario-nota { grid-column: span 2; text-align: center; font-size: 0.75rem; color: #666; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -59,9 +60,90 @@
         
         <div class="reserva-form">
             <input type="text" id="nombre" placeholder="NOMBRE COMPLETO" class="full-width">
+            
+            <input type="email" id="correo" placeholder="CORREO ELECTRÓNICO">
             <input type="tel" id="celular" placeholder="TELÉFONO CELULAR">
-            <input type="datetime-local" id="fecha">
+
+            <div class="full-width" style="display: flex; flex-direction: column; gap: 20px;">
+                <label>Fecha y Hora (Atención: 12:00 PM - 10:00 PM)</label>
+                <input type="datetime-local" id="fecha" min="2024-01-01T12:00" max="2030-01-01T22:00">
+            </div>
             
             <select id="personas">
                 <option value="" disabled selected>NÚMERO DE PERSONAS</option>
-                <option value="
+                <option value="2">2 Personas</option>
+                <option value="4">4 Personas</option>
+                <option value="6">6 Personas</option>
+            </select>
+
+            <select id="ubicacion">
+                <option value="" disabled selected>POSICIÓN DE LA MESA</option>
+                <option value="Ventana">Cerca a la ventana</option>
+                <option value="Bar">Cerca al bar</option>
+                <option value="Parrilla">Cerca a la parrilla</option>
+                <option value="Cualquiera">Cualquier posición</option>
+            </select>
+
+            <select id="ocasion" class="full-width">
+                <option value="" disabled selected>OCASIÓN ESPECIAL</option>
+                <option value="Cena">Cena Estándar</option>
+                <option value="Aniversario">Aniversario</option>
+                <option value="Cumpleaños">Cumpleaños</option>
+                <option value="Negocios">Negocios</option>
+            </select>
+
+            <textarea id="alergias" placeholder="¿ALGUNA ALERGIA O PREFERENCIA DIETÉTICA?" class="full-width" rows="2"></textarea>
+            
+            <button class="btn-reserva" onclick="enviarReserva()">SOLICITAR EXPERIENCIA VIP</button>
+            <p class="horario-nota">Horario de atención: Lunes a Domingo de 12:00 a 22:00</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://raiz-api.onrender.com";
+
+        async function enviarReserva() {
+            const nombre = document.getElementById('nombre').value;
+            const correo = document.getElementById('correo').value;
+            const celular = document.getElementById('celular').value;
+            const fechaVal = document.getElementById('fecha').value;
+            const personas = document.getElementById('personas').value;
+            const ubicacion = document.getElementById('ubicacion').value;
+            
+            if (!nombre || !correo || !celular || !fechaVal || !ubicacion || !personas) {
+                alert("Por favor, complete todos los campos requeridos.");
+                return;
+            }
+
+            // Validar Horario
+            const hora = new Date(fechaVal).getHours();
+            if (hora < 12 || hora >= 22) {
+                alert("Lo sentimos, solo aceptamos reservas entre las 12:00 PM y las 10:00 PM.");
+                return;
+            }
+            
+            const datos = {
+                nombre, correo, celular, fecha: fechaVal, personas, ubicacion,
+                ocasion: document.getElementById('ocasion').value,
+                alergias: document.getElementById('alergias').value,
+                estado: 'Pendiente'
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/reservar`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(datos)
+                });
+                
+                if(response.ok) {
+                    alert("Su solicitud ha sido enviada con éxito.");
+                    location.reload();
+                }
+            } catch (error) {
+                alert("Error de conexión.");
+            }
+        }
+    </script>
+</body>
+</html>
