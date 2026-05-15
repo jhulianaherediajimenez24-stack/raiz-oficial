@@ -6,22 +6,31 @@
     <title>Panel Administrativo | RAÍZ</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --oro: #c5a059; --negro: #0a0a0a; --gris: #1a1a1a; }
+        :root { --oro: #c5a059; --negro: #0a0a0a; --gris: #1a1a1a; --verde: #2ecc71; --rojo: #e74c3c; }
         body { background: var(--negro); color: white; font-family: 'Montserrat', sans-serif; padding: 20px; margin: 0; }
         h1 { font-family: 'Cinzel', serif; color: var(--oro); text-align: center; border-bottom: 2px solid var(--oro); padding-bottom: 20px; margin-bottom: 30px; letter-spacing: 5px; }
-        .btn-refresh { background: var(--oro); color: black; width: 100%; border: none; padding: 15px; font-family: 'Cinzel', serif; font-weight: bold; cursor: pointer; margin-bottom: 30px; letter-spacing: 2px; transition: 0.3s; }
-        .btn-refresh:hover { background: #dfb870; }
-        .reserva-card { background: var(--gris); margin-bottom: 20px; padding: 25px; border-radius: 8px; border-left: 5px solid var(--oro); position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .nombre-cliente { color: var(--oro); font-family: 'Cinzel', serif; font-size: 1.5rem; margin: 0 0 10px 0; text-transform: uppercase; }
-        .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem; }
-        .dato { color: #ccc; }
+        .btn-refresh { background: var(--oro); color: black; width: 100%; border: none; padding: 15px; font-family: 'Cinzel', serif; font-weight: bold; cursor: pointer; margin-bottom: 30px; letter-spacing: 2px; }
+        .reserva-card { background: var(--gris); margin-bottom: 20px; padding: 25px; border-radius: 8px; border-left: 5px solid #444; position: relative; }
+        .nombre-cliente { color: var(--oro); font-family: 'Cinzel', serif; font-size: 1.5rem; margin: 0 0 10px 0; }
+        .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem; margin-bottom: 15px; }
         .dato span { color: var(--oro); font-weight: 600; }
-        .tag-ocasion { background: rgba(197, 160, 89, 0.1); color: var(--oro); padding: 5px 10px; border-radius: 4px; display: inline-block; margin-top: 15px; font-size: 0.8rem; border: 1px solid var(--oro); }
+        
+        /* Estados */
+        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; }
+        .pendiente { background: #555; color: white; }
+        .aprobada { background: var(--verde); color: black; }
+        .rechazada { background: var(--rojo); color: white; }
+
+        .acciones { display: flex; gap: 10px; }
+        .btn-accion { flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-family: 'Montserrat'; transition: 0.3s; }
+        .btn-aprobar { background: var(--verde); color: black; }
+        .btn-rechazar { background: var(--rojo); color: white; }
+        .btn-accion:hover { opacity: 0.8; transform: translateY(-2px); }
     </style>
 </head>
 <body>
     <h1>GESTIÓN DE RESERVAS</h1>
-    <button class="btn-refresh" onclick="cargar()">ACTUALIZAR LISTA DE CLIENTES</button>
+    <button class="btn-refresh" onclick="cargar()">ACTUALIZAR LISTA</button>
     <div id="lista-reservas"></div>
 
     <script>
@@ -34,33 +43,50 @@
                 const contenedor = document.getElementById('lista-reservas');
                 contenedor.innerHTML = "";
 
-                if (reservas.length === 0) {
-                    contenedor.innerHTML = "<p style='text-align:center; color:#666;'>No hay solicitudes de reserva aún.</p>";
-                    return;
-                }
-
-                reservas.reverse().forEach((r) => {
+                reservas.reverse().forEach((r, index) => {
+                    // El index real en la lista original (porque usamos reverse)
+                    const originalIndex = reservas.length - 1 - index;
                     const card = document.createElement('div');
                     card.className = 'reserva-card';
+                    
+                    // Color de borde según estado
+                    if(r.estado === 'Aprobada') card.style.borderLeftColor = "var(--verde)";
+                    if(r.estado === 'Rechazada') card.style.borderLeftColor = "var(--rojo)";
+
                     card.innerHTML = `
+                        <div class="status-badge ${r.estado.toLowerCase()}">${r.estado}</div>
                         <h3 class="nombre-cliente">${r.nombre}</h3>
                         <div class="grid-info">
                             <div class="dato"><span>📱 Cel:</span> ${r.celular}</div>
-                            <div class="dato"><span>📧 Correo:</span> ${r.correo}</div>
-                            <div class="dato"><span>📅 Fecha:</span> ${r.fecha}</div>
                             <div class="dato"><span>⏰ Hora:</span> ${r.hora}</div>
                             <div class="dato"><span>👥 Personas:</span> ${r.personas}</div>
                             <div class="dato"><span>📍 Mesa:</span> ${r.ubicacion}</div>
                         </div>
-                        ${r.ocasion ? `<div class="tag-ocasion">✨ Motivo: ${r.ocasion}</div>` : ''}
+                        
+                        ${r.estado === 'Pendiente' ? `
+                        <div class="acciones">
+                            <button class="btn-accion btn-aprobar" onclick="decidir(${originalIndex}, 'Aprobada')">APROBAR</button>
+                            <button class="btn-accion btn-rechazar" onclick="decidir(${originalIndex}, 'Rechazada')">RECHAZAR</button>
+                        </div>
+                        ` : ''}
                     `;
                     contenedor.appendChild(card);
                 });
-            } catch (e) { 
-                console.error(e);
-                alert("Error al conectar con el Cerebro."); 
-            }
+            } catch (e) { alert("Error al cargar reservas."); }
         }
+
+        async function decidir(id, nuevoEstado) {
+            try {
+                // Aquí usamos una ruta que ya creamos en el app.py
+                const res = await fetch(`${API_URL}/admin/confirmar/${id}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ estado: nuevoEstado })
+                });
+                if(res.ok) cargar();
+            } catch(e) { alert("Error al procesar."); }
+        }
+
         window.onload = cargar;
     </script>
 </body>
