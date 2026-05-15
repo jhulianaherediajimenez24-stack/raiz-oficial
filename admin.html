@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel RAÍZ | Gestión de Reservas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { background: #0a0a0a; color: white; font-family: 'Montserrat', sans-serif; margin: 0; padding: 20px; }
+        h1 { font-family: 'Cinzel', serif; color: #c5a059; text-align: center; border-bottom: 2px solid #c5a059; padding-bottom: 10px; }
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: #1a1a1a; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #333; }
+        .stat-card span { display: block; font-size: 1.5rem; color: #c5a059; font-weight: bold; }
+        
+        .reserva-card { background: #1a1a1a; margin-bottom: 15px; padding: 20px; border-radius: 10px; border-left: 5px solid #444; position: relative; }
+        .reserva-card.confirmada { border-left-color: #2ecc71; }
+        .reserva-card h3 { margin: 0 0 10px 0; color: #c5a059; }
+        .info { font-size: 0.9rem; color: #ccc; margin-bottom: 5px; }
+        .badge { position: absolute; top: 20px; right: 20px; padding: 5px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .pendiente { background: #e67e22; color: white; }
+        .confirmada-badge { background: #2ecc71; color: white; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        button { flex: 1; padding: 10px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .btn-check { background: #2ecc71; color: white; }
+        .btn-del { background: #e74c3c; color: white; }
+        .btn-refresh { background: #c5a059; color: black; width: 100%; margin-bottom: 20px; padding: 15px; }
+    </style>
+</head>
+<body>
+
+    <h1>Panel de Control RAÍZ</h1>
+
+    <div class="stats">
+        <div class="stat-card">Total<span id="total-res">0</span></div>
+        <div class="stat-card">Mesa VIP<span id="mesa-pop">-</span></div>
+    </div>
+
+    <button class="btn-refresh" onclick="cargarReservas()">ACTUALIZAR LISTA</button>
+
+    <div id="lista-reservas">
+        <p style="text-align:center">Cargando reservas...</p>
+    </div>
+
+    <script>
+        const API_URL = "https://raiz-api.onrender.com"; // Asegúrate que sea tu URL de Render
+
+        async function cargarReservas() {
+            try {
+                const res = await fetch(`${API_URL}/admin/reservas`);
+                const reservas = await res.json();
+                
+                const contenedor = document.getElementById('lista-reservas');
+                document.getElementById('total-res').innerText = reservas.length;
+                contenedor.innerHTML = "";
+
+                if (reservas.length === 0) {
+                    contenedor.innerHTML = "<p style='text-align:center'>No hay reservas aún.</p>";
+                    return;
+                }
+
+                reservas.forEach((r, index) => {
+                    const card = document.createElement('div');
+                    card.className = `reserva-card ${r.estado === 'Confirmada' ? 'confirmada' : ''}`;
+                    card.innerHTML = `
+                        <div class="badge ${r.estado === 'Pendiente' ? 'pendiente' : 'confirmada-badge'}">${r.estado}</div>
+                        <h3>${r.nombre}</h3>
+                        <div class="info">🪑 Mesa: <b>${r.mesa}</b> | 👥 Pers: ${r.personas}</div>
+                        <div class="info">📅 Fecha: ${new Date(r.fecha).toLocaleString()}</div>
+                        <div class="info">🥩 Término: ${r.termino || 'No especificado'}</div>
+                        <div class="info">🍽️ Pedido: ${r.platos.join(", ") || "Solo mesa"}</div>
+                        
+                        <div class="btn-group">
+                            ${r.estado === 'Pendiente' ? `<button class="btn-check" onclick="confirmar(${index})">CONFIRMAR</button>` : ''}
+                            <button class="btn-del" onclick="eliminar(${index})">BORRAR</button>
+                        </div>
+                    `;
+                    contenedor.appendChild(card);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function confirmar(id) {
+            await fetch(`${API_URL}/admin/confirmar/${id}`, { method: 'POST' });
+            cargarReservas();
+        }
+
+        async function eliminar(id) {
+            if(confirm("¿Seguro que quieres borrar esta reserva?")) {
+                // Aquí podrías agregar una ruta en tu app.py para borrar
+                alert("Función de borrado conectada");
+            }
+        }
+
+        window.onload = cargarReservas;
+    </script>
+</body>
+</html>
